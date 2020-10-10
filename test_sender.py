@@ -34,7 +34,7 @@ def print_fancy(text):
 
 def main():
     # Initialize the connection
-    with CQCConnection("Snd") as Snd:
+    with CQCConnection("Node1") as Snd:
         pair_arr = []
         A_key = generate_base_key_pair()
         print("KEY: ", [a for _, a in A_key])
