@@ -9,14 +9,13 @@ src = 1
 dest = 2
 
 
-def request_pairs(size, dest):
-    with CQCConnection(src) as Src:
-        message = [0, src, dest, size]
-        Src.sendClassical("Server", message)
-        if Src.recvClassical():
-            print("Pair request is approved")
-        else:
-            print("Request Failed")
+def request_pairs(Src, size, dest):
+    message = [0, src, dest, size]
+    Src.sendClassical("Server", message)
+    if Src.recvClassical():
+        print("Pair request is approved")
+    else:
+        print("Request Failed")
 
 
 def generate_base_key_pair():
@@ -35,6 +34,7 @@ def print_fancy(text):
 def main():
     # Initialize the connection
     with CQCConnection("Node1") as Snd:
+        request_pairs(Snd, N, 2)
         pair_arr = []
         A_key = generate_base_key_pair()
         print("KEY: ", [a for _, a in A_key])
@@ -70,7 +70,7 @@ def main():
         msg = []
         msg.extend(measurements_a)
         msg.extend(measurements_b)
-        Snd.sendClassical("Client", msg)
+        Snd.sendClassical("Node"+str(dest), msg)
 
 
 main()

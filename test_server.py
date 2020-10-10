@@ -23,8 +23,11 @@ def main():
             print("Error: Invalid number of pairs {}".format(N))
             exit(0)
         # Request Approved
+        print("Request Approved")
         Server.sendClassical(source, 1)
+        print("Response sent to source")
         Server.sendClassical(destination, request[1])
+        print("Response sent to destination")
 
         # Type0: Make pair
         if request_type == 0:
@@ -33,12 +36,12 @@ def main():
             # Create EPR pairs, 2*size qubits
             # Split pairs and send to source node
             for i in range(N):
-                pair_arr.append(Server.createEPR(source))
+                pair_arr.append(Server.createEPR(destination))
                 print("{} Pairs created".format((i + 1) * 2))
 
             # Send remaining qubits to destination node
             for i in range(N):
-                Server.sendQubit(pair_arr[i], destination)
+                Server.sendQubit(pair_arr[i], source)
 
 
 ##################################################################################################

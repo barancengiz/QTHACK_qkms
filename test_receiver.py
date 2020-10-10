@@ -10,6 +10,7 @@ def main():
     with CQCConnection("Node2") as Client:
 
         mess = Client.recvClassical()
+        mess = list(mess)
         is_alert = None
         if len(mess) == 1:
             is_alert = True
@@ -18,7 +19,7 @@ def main():
             # Make an EPR pair with Alice
             for i in range(N):
                 pair_arr.append(Client.recvEPR())
-
+            print("EPR pairs received")
             # Get lists of measurements
             data = Client.recvClassical()
             message = list(data)
