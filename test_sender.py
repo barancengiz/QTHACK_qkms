@@ -1,5 +1,5 @@
 from random import randrange
-
+from trides import trides
 from cqc.pythonLib import CQCConnection, qubit
 
 N = 10  # Number of paired qubits
@@ -98,6 +98,9 @@ def main():
     with CQCConnection("Node1") as Node1:
         key = create_key_snd(Node1)
         print_fancy(str(key))
+        msg = "Hello"
+        enc_msg = trides(msg)
+        Node1.sendClassical("Node" + str(dest), bytes(enc_msg, "utf8"))
 
 
 main()

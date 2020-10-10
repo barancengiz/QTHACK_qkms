@@ -71,6 +71,8 @@ def main():
     with CQCConnection("Node2") as Node2:
         key = create_key_rcv(Node2)
         print_fancy(str(key))
+        msg = Node2.recvClassical()
+        print(msg.decode("utf8"))
 
 
 main()
