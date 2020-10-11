@@ -17,8 +17,8 @@ def main():
             # Get required pair size
             request = Server.recvClassical()
             request_type = request[0]
-            source = node_map(request[1])
-            destination = node_map(request[2])
+            source = node_map(request[1])+"s"
+            destination = node_map(request[2])+"r"
             N = request[3]
             if N < 1:
                 print("Error: Invalid number of pairs {}".format(N))
