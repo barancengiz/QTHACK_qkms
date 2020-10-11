@@ -3,6 +3,7 @@ import threading
 from random import randrange
 
 from Crypto.Cipher import AES
+from Crypto.Hash import SHA256
 from cqc.pythonLib import CQCConnection, qubit
 
 N = 10  # Number of paired qubits
@@ -12,7 +13,8 @@ source = int(arg_list[1])
 dest = int(arg_list[2])
 sifted_key = []
 obj = None
-
+key_match = False
+translation_table = str.maketrans("ıöüçşğ", "ioucsg")
 
 def frombits(bits):
     byteList = []
@@ -25,9 +27,14 @@ def frombits(bits):
 def create_key_rcv():
     print("Inside Rcv")
     with CQCConnection("Node" + str(source) + "r") as Receiver:
-        while (True):
+        global sifted_key, key_match, obj
+        while True:
             while len(sifted_key) < key_size:
                 mess = Receiver.recvClassical()
+                if len(sifted_key) >= key_size:
+                    plain_text = obj.decrypt(mess)
+                    print("Node{}: {}".format(dest, plain_text.decode("utf8", errors='replace')))
+                    break
                 mess = list(mess)
                 src = mess[0]
                 is_alert = None
@@ -75,22 +82,42 @@ def create_key_rcv():
                             sifted_key.append(measurements[i])
                     print("Sifted key: ", sifted_key)
             sifted_key_f = sifted_key[:key_size]
+            if not key_match:
+                hash_mess = generate_hash(frombits(sifted_key_f))
+                other_hash = Receiver.recvClassical()
+                if hash_mess != other_hash:
+                    print("Error: Key mismatch. Deleting key")
+                    Receiver.sendClassical("Node" + str(src) + "s", 0)
+                    sifted_key = []
+                    sifted_key_f = []
+                    continue
+                else:
+                    Receiver.sendClassical("Node" + str(src) + "s", 1)
+                    key_match=True
             msg = Receiver.recvClassical()
 
-            global obj
             if obj is None:
                 AES_key = frombits(sifted_key_f)
                 print("AES key: {} size {}".format(AES_key, len(AES_key)))
                 obj = AES.new(AES_key)
             plain_text = obj.decrypt(msg)
-            print("Node{}: {}".format(dest, plain_text.decode("utf8")))
+            print("Node{}: {}".format(dest, plain_text.decode("utf8", errors='replace')))
+
+
+def generate_hash(sifted_key_f):
+    h = SHA256.new()
+    h.update(sifted_key_f)
+    hash = h.digest()
+    return hash
 
 
 def create_key_snd():
     print("Inside Send")
     with CQCConnection("Node" + str(source) + "s") as Snd:
-        while (True):
+        global sifted_key, key_match
+        while True:
             text_message = input()
+            text_message = text_message.translate(translation_table)
             if len(text_message) % 16 != 0:
                 text_message += " " * (16 - len(text_message) % 16)
             while len(sifted_key) < key_size:
@@ -151,6 +178,18 @@ def create_key_snd():
                 print("Sifted key: ", sifted_key)
                 print("Sifted key length: ", len(sifted_key))
             sifted_key_f = sifted_key[:key_size]
+
+            if not key_match:
+                hash_mess = generate_hash(frombits(sifted_key_f))
+                Snd.sendClassical("Node" + str(dest) + "r", hash_mess)
+                key_correct = Snd.recvClassical()
+                if not key_correct:
+                    print("Error: Key mismatch. Deleting key")
+                    sifted_key = []
+                    sifted_key_f = []
+                    continue
+                else:
+                    key_match=True
 
             global obj
             if obj is None:
