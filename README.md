@@ -55,4 +55,4 @@ Açılan pencerede mesajını yazın ve "Send"e tıklayın. (Göndermek için En
 
 Tebrikler
 
-### Gelecek İşler: Sistemin simülasyon dışında da çalışabilmesi için E91 paylaşımı içerisinde hata doğrulama algoritmaları kullanılmalıdır. Gönderimde oluşacak hataların düzeltilmesi ve dinlenme sonucu oluşacak hataların düzeltilmesi gereklidir. Simülasyon programları qubit sayısını sınırladığından ve kuantum işlemleri simülasyonda çok yavaş yapıldığından, şimdilik sisteme böyle bir algoritma eklenmemiştir.
+__Gelecek İşler:__ Sistemin simülasyon dışında da çalışabilmesi için E91 paylaşımı içerisinde hata doğrulama algoritmaları kullanılmalıdır. Gönderimde oluşacak hataların düzeltilmesi ve dinlenme sonucu oluşacak hataların düzeltilmesi gereklidir. Simülasyon programları qubit sayısını sınırladığından ve kuantum işlemleri simülasyonda çok yavaş yapıldığından, şimdilik sisteme böyle bir algoritma eklenmemiştir.
