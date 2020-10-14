@@ -21,6 +21,7 @@ Simulaqron indirmek için (Linux):
 
 Test etmek için terminalden python3 yazdıktan sonra unittest'i deneyebilirsiniz.
 > import simulaqron
+
 > simulaqron.tests()
 
 Simulaqron'u başlatın
@@ -31,6 +32,7 @@ Kullanıcı 'node'larını oluşturun. Her kullanıcı, veri alma ve yollama iş
 
 Simulaqron default network değiştermek istiyor musunuz diye soracak. yes yazın. Eğer sormamışsa bir sıkıntı var demektir, simulaqronu durdurun ve baştan başlatın.
 > simulaqron stop
+
 > simulaqron reset
 
 Sunucuyu başlatın
